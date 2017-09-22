@@ -1,13 +1,13 @@
-var designCreep = require("creepDesigner");
+const designCreep = require("creepDesigner");
 
-var structSpawn = {
+const structSpawn = {
     run: run
 };
 
 function run(spawn) {
 
 	if (spawn.spawning) { 
-        var spawningCreep = Game.creeps[spawn.spawning.name];
+        const spawningCreep = Game.creeps[spawn.spawning.name];
         spawn.room.visual.text(
             "🛠️" + spawningCreep.memory.role,
             spawn.pos.x + 1, 

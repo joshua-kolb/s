@@ -28,7 +28,7 @@ function run(creep) {
 
 function findMiningTarget(creep) {
 	let targets = [];
-	for (sourceId in Memory[creep.room.name]) {
+	for (let sourceId in Memory[creep.room.name]) {
 		const source = Memory[creep.room.name][sourceId];
 		if (!source.hostile) {
 			source.positions.foreach((pos, index) => {
@@ -49,7 +49,7 @@ function findMinerPositions(room) {
 	const sources = room.find(FIND_SOURCES);
 
 	let result = {};
-	for(sourceId in sources) {
+	for(let sourceId in sources) {
 		const source = sources[sourceId];
 		result[sourceId] = {
 			hostile: findIfSourceIsHostile(source),

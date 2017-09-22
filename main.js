@@ -13,11 +13,12 @@ module.exports.loop = function () {
     }
     
     for (let spawnId in Game.spawns) {
-        const spawn = Game.spawns[spawnId];
-		structSpawn.run(spawn);
+		const spawn = Game.spawns[spawnId];
 		if (!Memory.minerPositions || !Memory.minerPositions[spawn.room.name]) {
+			Memory.minerPositions = {};
 			Memory.minerPositions[spawn.room.name] = roleMiner.findMinerPositions(spawn.room);
 		}
+		structSpawn.run(spawn);
     }
 
     for (let name in Game.creeps) {
