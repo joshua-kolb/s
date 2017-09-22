@@ -1,0 +1,195 @@
+
+
+Actions of both buildings and creeps should be need-driven.
+So first of all, we need a way of evaluating current needs
+that moves the colony towards better efficiency.
+
+        UpgradeController --
+           |          |     \
+           V          |     |
+    --->Energy <------|-----|--
+   /   /   |          |     |  \
+  |   /    V          |     |   \
+  |  |  StorageSpace--|-----|-> Construction
+  |  |                |     |   /   ^
+  |   \               | ----|---    |
+  |    -> Collection  |/    | /     |
+  |       |       |   |     |/      |
+  |       V       V   V     |       |
+  | Harvesting   Transport -|----> Roads
+  |       |         |   \   |
+  |       |         V    \  |
+  |       |       CARRY   --|--------> MOVE
+  |       \         |       V           |
+  |        ---------|----> WORK         |
+  |                 |       |           |
+   \                V       V          /
+    ------------- CreepCreation <-----
+
+
+Perhaps each node in this graph should have a current efficiency
+rating. This could be its total output of said need per tick.
+Supply and demand should also be put into the equation.
+Creeps should each have an efficiency rating for every possible
+task it can perform.
+
+Flexibility of creeps shouild be valued somewhat, although
+specialization of creeps should definately be considered at a
+certain point as well.
+
+Defense is a need as well, although its dependancies are quite
+different. Defense could be thought of as not being needed at
+all during peace time, but is needed when threats exist. This means
+that preparation will need to be made in proportion to total value of
+the colony and potential threat.
+
+Offense could be a need that is econimically or defensively motivated.
+The primary economic interest would be the aquisition of different minerals.
+This minerals could then be used in the main economic graph.
+
+I suppose that the above graph could have two major goals -- controller level
+and / or energy.
+
+Control of military creeps could be quite a bit more difficult, the tactics
+engine would need to be developed seperately.
+
+*/
+
+
+
+/*
+
+# Creep Ratings
+
+How should we rate a creep? Let's calculate the amount of ticks a creep would
+take to do harvesting all by itself, starting at the storage location.
+
+TPO = ticks per operation (lower is better)
+RPO = result per operation (higher is better)
+RPT = RPO / TPO = resource per tick (higher is better). This should be a 
+good hueristic of how good the creep is at doing the operation.
+
+QPO = requirement per operation
+
+Variables:
+* t = time spent
+* p = production
+
+* m = creep's move parts
+* c = creep's carry parts
+* w = creep's work parts
+* h = creep's total body parts
+
+* d = distance from storage (number of total squares) = R + L + S
+* R = number of road squares on path
+* L = number of land squares on path
+* S = number of swamp squares on path
+
+Steps:
+1. Move to nearest source.                       t1 = max( (h-c)*(R + 2L + 10S) - d*m , d)
+2. Mine source for energy till creep is full.    t2 = ceil( (c*50)/(w*2) )
+3. Move back to storage.                         t3 = max( h*(R + 2L + 10S) - d*m , d)
+
+t = t1 + t2 + t3
+p = c*50
+
+Objectives:
+* max p
+    * max c
+* min t
+    * min t1, t3
+        * min d
+        * min S
+        * max R
+        * min h
+        * max m
+    * min t2
+        * min c
+        * max w
+
+ratings: {
+    move: {
+        road: {
+            TPO: max( (2*(h-c)-m) , 1),
+            RPO: 1
+        },
+        land: {
+            TPO: max( (2*(h-c)-m) , 1),
+            RPO: 1
+        },
+        swamp: {
+            TPO: max( (10*(h-c)-m) , 1),
+            RPO: 1
+        }
+    },
+    pickup: {
+        TPO: 1,
+        RPO: c*50,
+        QPO: [{
+            "memory.full": false 
+        }]
+    },
+    transport: {
+        road: {
+            TPO: max( (2*h-m) , 1),
+            RPO: c*50
+        },
+        land: {
+            TPO: max( (2*h-m) , 1),
+            RPO: c*50
+        },
+        swamp: {
+            TPO: max( (10*h-m) , 1),
+            RPO: c*50
+        }
+    },
+    harvestSource: {
+        TPO: 1,
+        RPO: w*2
+    },
+    harvestDeposit: {
+        TPO: 1,
+        RPO: w
+    },
+    build: {
+        TPO: 1,
+        RPO: w,
+        QPO: [{
+            "carry.energy": 5*w
+        }]
+    },
+    repair: {
+        TPO: 1,
+        RPO: 100*w,
+        QPO: [{
+            "carry.energy": w
+        }]
+    },
+    dismantle: {
+        TPO: 1,
+        RPO: 50*w
+    },
+    upgradeController: {
+        TPO: 1,
+        RPO: w,
+        QPO: [{
+            "carry.energy": w
+        }]
+    }
+}
+
+Here again, we're leaving out defense and offense for now. I think that the
+very nature of how to go about figuring the best path will be significantly
+more complex, since it introduces a fair amount of uncertainty to the situation.
+
+
+
+
+
+
+
+
+
+
+
+
