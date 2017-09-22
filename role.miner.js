@@ -78,7 +78,7 @@ function findPositionsAroundSource(source) {
 	let result = [];
 	for (let x = source.pos.x - 1; x <= source.pos.x + 1; x++) {
 		for (let y = source.pos.y - 1; y <= source.pos.y + 1; y++) {
-			if ((x != source.pos.x || y != source.pos.y) && Game.map.getTerrainAt(x,y,source.room) == "plain") {
+			if ((x != source.pos.x || y != source.pos.y) && Game.map.getTerrainAt(x,y,source.room.name) == "plain") {
 				result.push({
 					pos: new RoomPosition(x, y, source.pos.roomName),
 					filled: false
