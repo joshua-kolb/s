@@ -15,7 +15,10 @@ function run(creep) {
 	}
 
 	if (!creep.memory.target) {
-		creep.memory.target = findMiningTarget(creep).pos;
+		creep.memory.target = findMiningTarget(creep);
+		if (!creep.memory.target) {
+			return;
+		}
 		Memory.minerPositions[creep.room.name][creep.memory.target.sourceId].positions[creep.memory.target.posIndex].filled = true;
 	}
 
@@ -28,8 +31,8 @@ function run(creep) {
 
 function findMiningTarget(creep) {
 	let targets = [];
-	for (let sourceId in Memory[creep.room.name]) {
-		const source = Memory[creep.room.name][sourceId];
+	for (let sourceId in Memory.minerPositions[creep.room.name]) {
+		const source = Memory.minerPositions[creep.room.name][sourceId];
 		if (!source.hostile) {
 			source.positions.foreach((pos, index) => {
 				if (!pos.filled) {
@@ -94,7 +97,7 @@ module.exports = roleMiner;
 
 example 
 
-"minerpositions": {
+"minerPositions": {
 	"room1": {
 		"source1": {
 			"hostile": true,
