@@ -30,10 +30,10 @@ function run(spawn) {
 		spawnCreep(spawn, "truck");
 	}
 	else if (engineers.length < trucks.length) {
-		spawnCreep(spawn, "engineer")
+		spawnCreep(spawn, "engineer");
     }
     else if (availableMiningSpots != 0) {
-		spawnCreep(spawn, "miner")
+		spawnCreep(spawn, "miner");
 	}
     
 }

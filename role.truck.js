@@ -1,5 +1,3 @@
-const Utils = require("common.utils");
-
 const roleTruck = {
 	run: run
 };
