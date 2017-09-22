@@ -9,14 +9,14 @@ function run(creep) {
 	if (creep.ticksToLive == 1) {
 		if (creep.memory.target) {
 		// Open up the mining spot just before death
-		Memory["minerPositions"][creep.room.name][creep.memory.target.sourceId]["positions"][creep.memory.target.posIndex]["filled"] = false;
+		Memory.minerPositions[creep.room.name][creep.memory.target.sourceId].positions[creep.memory.target.posIndex].filled = false;
 		}
 		return;
 	}
 
 	if (!creep.memory.target) {
 		creep.memory.target = findMiningTarget(creep).pos;
-		Memory["minerPositions"][creep.room.name][creep.memory.target.sourceId]["positions"][creep.memory.target.posIndex]["filled"] = true;
+		Memory.minerPositions[creep.room.name][creep.memory.target.sourceId].positions[creep.memory.target.posIndex].filled = true;
 	}
 
 	if (creep.memory.target.pos.x != creep.pos.x || creep.memory.target.pos.y != creep.pos.y) {
