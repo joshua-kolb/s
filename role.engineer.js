@@ -58,7 +58,10 @@ function run(creep) {
 
 	switch(result) {
 		case ERR_NOT_IN_RANGE:
-			creep.moveTo(Game.getObjectById(creep.memory.target), {visualizePathStyle: {stroke: creep.memory.color}});
+			const moveResult = creep.moveTo(Game.getObjectById(creep.memory.target), {visualizePathStyle: {stroke: creep.memory.color}});
+			if (moveResult == ERR_INVALID_TARGET && creep.memory.refueling) {
+				creep.memory.target = findClosestRefuelingStation(creep);
+			}
 			break;
 		case ERR_INVALID_TARGET:
 			break;
@@ -106,8 +109,8 @@ function decideTask(creep) {
 
 function findClosestRefuelingStation(creep) {
 	const containers = 
-		_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType)).concat(
-				 _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy >= (3/4) * (struct.energyCapacity)));
+		_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType) && struct.energy > struct.energyCapacity).concat(
+				 _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy > struct.energyCapacity));
 	
 	let result;
 	if (containers.length == 0) {
