@@ -16,7 +16,8 @@ function run(spawn) {
 		return;
 	}
 	
-	if (spawn.energy < 150) {
+	const newCreepEnergy = spawn.room.energyCapacityAvailable / 2;
+	if (spawn.room.energyAvailable < newCreepEnergy) {
 		return;
 	}
 
@@ -27,21 +28,21 @@ function run(spawn) {
 	const availableMiningSpots = _.reduce(Memory.minerPositions[spawn.room.name], (sum, source) => source.hostile ? sum : sum + source.positions.length, 0);
 
 	if (trucks.length < miners.length) {
-		spawnCreep(spawn, "truck");
+		spawnCreep(spawn, "truck", newCreepEnergy);
 	}
 	
 	if (engineers.length < trucks.length) {
-		spawnCreep(spawn, "engineer");
+		spawnCreep(spawn, "engineer", newCreepEnergy);
     }
 	
 	if (availableMiningSpots != 0) {
-		spawnCreep(spawn, "miner");
+		spawnCreep(spawn, "miner", newCreepEnergy);
 	}
     
 }
 
-function spawnCreep(spawn, creepType) {
-	const newName = spawn.createCreep(designCreep(creepType, spawn.energy/2), null, {role: creepType});
+function spawnCreep(spawn, creepType, energy) {
+	const newName = spawn.createCreep(designCreep(creepType, energy), null, {role: creepType});
 	console.log("Spawning new " + creepType + ": " + newName);
 }
 
