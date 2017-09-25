@@ -93,7 +93,7 @@ function decideTask(creep) {
 		creep.memory.color = "#00ffaa";
 		creep.say("repair");
 	}
-	else if ((totalConstructionSites == 1 ||  totalUpgraders >= 1) && totalConstructionSites > totalBuilders) {
+	else if (totalUpgraders >= 1 && totalConstructionSites > 0) {
 		creep.memory.building = true;
 		creep.memory.target = findBuildTarget(creep);
 		creep.memory.color = "#ffaa00";
@@ -109,18 +109,14 @@ function decideTask(creep) {
 
 function findClosestRefuelingStation(creep) {
 	const containers = 
-		_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType) && struct.energy > struct.energyCapacity).concat(
-				 _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy > struct.energyCapacity));
+		_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType) && struct.energy > 0).concat(
+				 _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy > 0));
 	
 	let result;
-	if (containers.length == 0) {
-		result = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
-		creep.memory.refuelMethod = "pickup";
-	} 
-	else {
+	if (containers.length > 0) {
 		result = creep.pos.findClosestByRange(containers);
 		creep.memory.refuelMethod = "withdraw";
-	}
+	} 
 	
 	if (!result) {
 		return null;
