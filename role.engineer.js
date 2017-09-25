@@ -28,7 +28,7 @@ function run(creep) {
 	else if (creep.carry.energy == 0) {
 		creep.memory.refueling = true;
 		creep.memory.target = findClosestRefuelingStation(creep);
-		creep.say('🔄 refuel');
+		creep.say('refuel');
 	}
 
 	let result;
