@@ -45,7 +45,8 @@ function run(creep) {
 	
 	if (creep.memory.shipping) {
 		if (!creep.memory.target) {
-			creep.memory.target = findShippingTarget();
+			creep.memory.target = findShippingTarget(creep);
+			return;
 		}
 		const result = creep.transfer(Game.getObjectById(creep.memory.target), RESOURCE_ENERGY);
 		switch (result) {
@@ -54,7 +55,7 @@ function run(creep) {
 					startLoading(creep);
 					return;
 				}
-				creep.memory.target = findShippingTarget();
+				creep.memory.target = findShippingTarget(creep);
 				return;
 			case ERR_NOT_IN_RANGE:
 				creep.moveTo(Game.getObjectById(creep.memory.target));
