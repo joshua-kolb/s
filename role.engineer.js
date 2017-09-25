@@ -28,7 +28,7 @@ function run(creep) {
 	else if (creep.carry.energy == 0) {
 		creep.memory.refueling = true;
 		creep.memory.target = findClosestRefuelingStation(creep);
-		creep.say('refuel');
+		creep.say("refuel");
 	}
 
 	let result;
@@ -38,10 +38,10 @@ function run(creep) {
 			return;
 		}
 		switch (creep.memory.refuelMethod) {
-			case 'pickup':
+			case "pickup":
 				result = creep.pickup(Game.getObjectById(creep.memory.target));
 				break;
-			case 'withdraw':
+			case "withdraw":
 				result = creep.withdraw(Game.getObjectById(creep.memory.target), RESOURCE_ENERGY);
 				break;
 		}
@@ -109,7 +109,17 @@ function findClosestRefuelingStation(creep) {
 	const containers = 
 		_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType)).concat(
 				 _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy >= (3/4) * (struct.energyCapacity)));
-	const result = creep.pos.findClosestByRange(containers);
+	
+	let result;
+	if (containers.length == 0) {
+		result = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
+		creep.memory.refuelMethod = "pickup";
+	} 
+	else {
+		result = creep.pos.findClosestByRange(containers);
+		creep.memory.refuelMethod = "withdraw"
+	}
+	
 	if (!result) {
 		return null
 	}
