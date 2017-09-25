@@ -11,7 +11,7 @@ function run(creep) {
 	if (creep.ticksToLive == 1) {
 		if (creep.memory.target) {
 		// Open up the mining spot just before death
-		Memory.minerPositions[creep.room.name][creep.memory.target.sourceId].positions[creep.memory.target.posIndex].filled = false;
+		Memory.minerPositions[creep.room.name][creep.memory.target.sourceIndex].positions[creep.memory.target.posIndex].filled = false;
 		}
 		return;
 	}
@@ -21,7 +21,7 @@ function run(creep) {
 		if (!creep.memory.target) {
 			return;
 		}
-		Memory.minerPositions[creep.room.name][creep.memory.target.sourceId].positions[creep.memory.target.posIndex].filled = true;
+		Memory.minerPositions[creep.room.name][creep.memory.target.sourceIndex].positions[creep.memory.target.posIndex].filled = true;
 	}
 
 	if (creep.memory.target.pos.x != creep.pos.x || creep.memory.target.pos.y != creep.pos.y) {
@@ -33,13 +33,14 @@ function run(creep) {
 
 function findMiningTarget(creep) {
 	let targets = [];
-	for (let sourceId in Memory.minerPositions[creep.room.name]) {
-		const source = Memory.minerPositions[creep.room.name][sourceId];
+	for (let sourceIndex in Memory.minerPositions[creep.room.name]) {
+		const source = Memory.minerPositions[creep.room.name][sourceIndex];
 		if (!source.hostile) {
 			_.forEach(source.positions, (pos, index) => {
 				if (!pos.filled) {
 					targets.push({
-						sourceId: sourceId,
+						sourceIndex: sourceIndex,
+						sourceId: source.id,
 						posIndex: index,
 						pos: pos.pos
 					});
@@ -57,6 +58,7 @@ function findMinerPositions(room) {
 	for(let sourceId in sources) {
 		const source = sources[sourceId];
 		result[sourceId] = {
+			id: source.id,
 			hostile: findIfSourceIsHostile(source),
 			positions: findPositionsAroundSource(source)
 		};
