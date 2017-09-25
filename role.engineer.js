@@ -61,10 +61,8 @@ function run(creep) {
 			creep.moveTo(Game.getObjectById(creep.memory.target), {visualizePathStyle: {stroke: creep.memory.color}});
 			break;
 		case ERR_INVALID_TARGET:
-			decideTask(creep);
 			break;
 		default:
-			decideTask(creep);
 			break;
 	}
 }
@@ -84,7 +82,7 @@ function decideTask(creep) {
 		!HEAVY_REPAIR_STRUCTS.includes(struct.structureType) && (2 * struct.hits) < struct.hitsMax && struct.room.name == creep.room.name
 	);
 
-	const totalConstructionSites = Game.constructionSites.keys().length;
+	const totalConstructionSites = _.keys(Game.constructionSites).length;
 	if (buildingsInNeedOfRepair.length > 2 * totalRepairers) {
 		creep.memory.repairing = true;
 		const target = creep.pos.findClosestByRange(buildingsInNeedOfRepair)

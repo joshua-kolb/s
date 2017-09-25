@@ -25,7 +25,7 @@ function run(spawn) {
 	const engineers = _.filter(Game.creeps, (creep) => creep.memory.role == "engineer");
 	const trucks = _.filter(Game.creeps, (creep) => creep.memory.role == "truck");
 
-	const availableMiningSpots = _.reduce(Memory.minerPositions[spawn.room.name], (sum, source) => source.hostile ? sum : sum + source.positions.length, 0);
+	const availableMiningSpots = _.reduce(Memory.minerPositions[spawn.room.name], (sum, source) => source.hostile || !source.positions ? sum : sum + source.positions.length, 0);
 
 	if (trucks.length < miners.length) {
 		spawnCreep(spawn, "truck", newCreepEnergy);
