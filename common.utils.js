@@ -5,7 +5,7 @@ const Utils = {
 function findClosestTarget(creep, targets) {
 	let closestTarget;
 	let bestDistance = Number.POSITIVE_INFINITY;
-	targets.foreach((target) => {
+	_.forEach(targets, (target) => {
 		const distance =  Math.max((target.pos.x - creep.pos.x),(target.pos.y - creep.pos.y))
 		if (cistance < bestDistance) {
 			bestDistance = distance;
