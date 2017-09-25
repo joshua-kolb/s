@@ -107,7 +107,7 @@ function decideTask(creep) {
 
 function findClosestRefuelingStation(creep) {
 	const containers = 
-		_.concat(_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType)),
+		_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType)).concat(
 				 _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy >= (3/4) * (struct.energyCapacity)));
 	const result = creep.pos.findClosestByRange(containers);
 	if (!result) {
