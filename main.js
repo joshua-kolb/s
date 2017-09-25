@@ -11,12 +11,15 @@ module.exports.loop = function () {
             console.log('Clearing non-existing creep memory:', name);
 		}
     }
-    
+	
+	if (!Memory.minerPositions) {
+		Memory.minerPositions = {};
+	}
     for (let spawnId in Game.spawns) {
 		const spawn = Game.spawns[spawnId];
-		if (!Memory.minerPositions || !Memory.minerPositions[spawn.room.name]) {
-			Memory.minerPositions = {};
+		if (!Memory.minerPositions[spawn.room.name] || Memory.minerPositions[spawn.room.name].lastCheckTime - Game.time > 300) {
 			Memory.minerPositions[spawn.room.name] = roleMiner.findMinerPositions(spawn.room);
+			Memory.minerPositions[spawn.room.name].lastCheckTime = Game.time;
 		}
 		structSpawn.run(spawn);
     }
