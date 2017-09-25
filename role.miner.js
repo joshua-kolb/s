@@ -34,7 +34,7 @@ function findMiningTarget(creep) {
 	for (let sourceId in Memory.minerPositions[creep.room.name]) {
 		const source = Memory.minerPositions[creep.room.name][sourceId];
 		if (!source.hostile) {
-			_.foreach(source.positions, (pos, index) => {
+			_.forEach(source.positions, (pos, index) => {
 				if (!pos.filled) {
 					targets.push({
 						sourceId: sourceId,
