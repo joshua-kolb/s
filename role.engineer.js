@@ -84,6 +84,7 @@ function decideTask(creep) {
 		!HEAVY_REPAIR_STRUCTS.includes(struct.structureType) && (2 * struct.hits) < struct.hitsMax && struct.room.name == creep.room.name
 	);
 
+	const totalConstructionSites = Game.constructionSites.keys().length;
 	if (buildingsInNeedOfRepair.length > 2 * totalRepairers) {
 		creep.memory.repairing = true;
 		const target = creep.pos.findClosestByRange(buildingsInNeedOfRepair)
@@ -91,7 +92,7 @@ function decideTask(creep) {
 		creep.memory.color = "#00ffaa";
 		creep.say("repair");
 	}
-	else if (totalUpgraders >= 1 && Game.constructionSites.keys().length > totalBuilders) {
+	else if ((totalConstructionSites == 1 ||  totalUpgraders >= 1) && totalConstructionSites > totalBuilders) {
 		creep.memory.building = true;
 		creep.memory.target = findBuildTarget(creep);
 		creep.memory.color = "#ffaa00";
