@@ -25,7 +25,7 @@ function run(creep) {
 		creep.memory.refueling = false;
 		decideTask(creep);
 	} 
-	else if (creep.carry.energy == 0) {
+	else if (!creep.memory.refueling && creep.carry.energy == 0) {
 		creep.memory.refueling = true;
 		creep.memory.target = findClosestRefuelingStation(creep);
 		creep.say("refuel");
@@ -117,11 +117,11 @@ function findClosestRefuelingStation(creep) {
 	} 
 	else {
 		result = creep.pos.findClosestByRange(containers);
-		creep.memory.refuelMethod = "withdraw"
+		creep.memory.refuelMethod = "withdraw";
 	}
 	
 	if (!result) {
-		return null
+		return null;
 	}
 	return result.id;
 }

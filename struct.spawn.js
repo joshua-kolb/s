@@ -15,8 +15,8 @@ function run(spawn) {
 			{align: "left", opacity: 0.8});
 		return;
 	}
-	
-	const newCreepEnergy = spawn.room.energyCapacityAvailable / 2;
+
+	let newCreepEnergy = Math.floor(spawn.room.energyCapacityAvailable * (Game.creeps.length < 2 ?  (1/2) : (7/8)) / 50) * 50;
 	if (spawn.room.energyAvailable < newCreepEnergy) {
 		return;
 	}
