@@ -30,13 +30,13 @@ function designCreep(role, energy) {
             parts.carry = Math.min(Math.floor((energy - 50) / 50), Math.floor((energy * 4 / 5) / 50));
             parts.move = Math.floor((energy - (parts.carry * 50)) / 50);
             break;
-        case "builder":
+        case "engineer":
 			parts.work = Math.min(Math.floor((energy - 50) / 100), Math.floor((energy * 3 / 5) / 100));
             parts.move = Math.min(Math.floor((energy - (parts.work * 100) - 50) / 50), Math.floor((energy * 1 / 5) / 50));
             parts.carry = Math.floor((energy - (parts.work * 100) - (parts.move * 50)) / 50);
             break;
         default:
-            throw "CreepDesigner error: role '" + role + "' not recognized";
+            console.error("CreepDesigner error: role '" + role + "' not recognized");
     }
     for(let key in parts) {
         result = addNCopies(result, PART_MAP[key], parts[key]);
