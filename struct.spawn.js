@@ -27,10 +27,10 @@ function run(spawn) {
 
 	const availableMiningSpots = _.reduce(Memory.minerPositions[spawn.room.name], (sum, source) => source.hostile || !source.positions ? sum : sum + source.positions.length, 0);
 
-	if (trucks.length < miners.length) {
+	if (trucks.length < miners.length * (2/3)) {
 		spawnCreep(spawn, "truck", newCreepEnergy);
 	}
-	else if (engineers.length < trucks.length) {
+	else if (engineers.length < miners.length) {
 		spawnCreep(spawn, "engineer", newCreepEnergy);
     }
 	else if (availableMiningSpots != 0) {

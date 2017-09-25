@@ -64,6 +64,10 @@ function run(creep) {
 			}
 			break;
 		case ERR_INVALID_TARGET:
+			decideTask(creep);
+			break;
+		case ERR_NOT_ENOUGH_RESOURCES:
+			creep.memory.target = findClosestRefuelingStation(creep);
 			break;
 		default:
 			break;
@@ -109,8 +113,8 @@ function decideTask(creep) {
 
 function findClosestRefuelingStation(creep) {
 	const containers = 
-		_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType) && struct.energy > 0).concat(
-				 _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy > 0));
+		_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType) && struct.energy > 10).concat(
+				 _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy > 10));
 	
 	let result;
 	if (containers.length > 0) {

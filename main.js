@@ -10,7 +10,11 @@ module.exports.loop = function () {
             delete Memory.creeps[name];
             console.log('Clearing non-existing creep memory:', name);
 		}
-    }
+	}
+	
+	if (!Memory.loadingPositions) {
+		Memory.loadingPositions = [];
+	}
 	
 	if (!Memory.minerPositions) {
 		Memory.minerPositions = {};
