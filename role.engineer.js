@@ -91,7 +91,7 @@ function decideTask(creep) {
 		creep.memory.color = "#00ffaa";
 		creep.say("repair");
 	}
-	else if (totalUpgraders > 1 && Game.constructionSites.length > totalBuilders) {
+	else if (totalUpgraders >= 1 && Game.constructionSites.keys().length > totalBuilders) {
 		creep.memory.building = true;
 		creep.memory.target = findBuildTarget(creep);
 		creep.memory.color = "#ffaa00";
