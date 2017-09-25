@@ -1,3 +1,5 @@
+const Utils = require("common.utils");
+
 const roleMiner = {
 	run: run,
 	findMinerPositions: findMinerPositions
@@ -39,13 +41,13 @@ function findMiningTarget(creep) {
 					targets.push({
 						sourceId: sourceId,
 						posIndex: index,
-						pos: pos
+						pos: pos.pos
 					});
 				}
 			});
 		}
 	}
-	return creep.pos.findClosestByRange(targets);
+	return Utils.findClosestTarget(creep, targets);
 }
 
 function findMinerPositions(room) {
