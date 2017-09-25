@@ -77,14 +77,14 @@ function run(creep) {
 function startLoading(creep) {
 	creep.memory.loading = true;
 	creep.memory.target = findLoadingTarget(creep);
-	creep.say("🔄 load");
+	creep.say("load");
 }
 
 function startShipping(creep) {
 	creep.memory.loading = false;
 	creep.memory.shipping = true;
 	creep.memory.target = findShippingTarget(creep);
-	creep.say("🚚 shipping");
+	creep.say("ship");
 }
 
 function findLoadingTarget(creep) {

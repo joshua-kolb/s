@@ -88,19 +88,19 @@ function decideTask(creep) {
 		creep.memory.repairing = true;
 		creep.memory.target = creep.pos.findClosestByRange(buildingsInNeedOfRepair).id;
 		creep.memory.color = "#00ffaa";
-		creep.say("🏥 repair");
+		creep.say("repair");
 	}
 	else if (totalUpgraders > 1 && Game.constructionSites.length > totalBuilders) {
 		creep.memory.building = true;
 		creep.memory.target = findBuildTarget(creep);
 		creep.memory.color = "#ffaa00";
-		creep.say("🛠️ build");
+		creep.say("build");
 	}
 	else {
 		creep.memory.upgrading = true;
 		creep.memory.target = creep.room.controller.id;
 		creep.memory.color = "#ffffff";
-		creep.say("⚡ upgrade");
+		creep.say("upgrade");
 	}
 }
 
