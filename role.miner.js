@@ -28,7 +28,7 @@ function run(creep) {
 		creep.moveTo(creep.memory.target.pos.x, creep.memory.target.pos.y);
 	}
 
-	creep.harvest(creep.room.find(FIND_SOURCES)[creep.memory.target.sourceId]);
+	creep.harvest(Game.getObjectById(creep.memory.target.sourceId));
 }
 
 function findMiningTarget(creep) {

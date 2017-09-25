@@ -20,7 +20,7 @@ function run(creep) {
 			creep.memory.target = findLoadingTarget(creep);
 			return;
 		}
-		const result = creep.pickup(creep.memory.target);
+		const result = creep.pickup(Game.getObjectById(creep.memory.target));
 		switch (result) {
 			case OK:
 				if (creep.carry.energy == creep.carryCapacity) {
@@ -30,7 +30,7 @@ function run(creep) {
 				creep.memory.target = findLoadingTarget(creep);
 				return;
 			case ERR_NOT_IN_RANGE:
-				creep.moveTo(creep.memory.target)
+				creep.moveTo(Game.getObjectById(creep.memory.target));
 				return;
 			case ERR_INVALID_TARGET:
 				creep.memory.target = findLoadingTarget(creep);
@@ -47,7 +47,7 @@ function run(creep) {
 		if (!creep.memory.target) {
 			creep.memory.target = findShippingTarget();
 		}
-		const result = creep.transfer(creep.memory.target, RESOURCE_ENERGY);
+		const result = creep.transfer(Game.getObjectById(creep.memory.target), RESOURCE_ENERGY);
 		switch (result) {
 			case OK:
 				if (creep.carry.energy == 0) {
@@ -57,7 +57,7 @@ function run(creep) {
 				creep.memory.target = findShippingTarget();
 				return;
 			case ERR_NOT_IN_RANGE:
-				creep.moveTo(creep.memory.target);
+				creep.moveTo(Game.getObjectById(creep.memory.target));
 				return;
 			case ERR_INVALID_TARGET:
 			case ERR_FULL:
@@ -88,15 +88,15 @@ function startShipping(creep) {
 }
 
 function findLoadingTarget(creep) {
-	return creep.pos.findClosestByRange(FIND_DROPPED_ENERGY);
+	return creep.pos.findClosestByRange(FIND_DROPPED_ENERGY).id;
 }
 
 function findShippingTarget(creep) {
 	const semiContainers =  _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType));
-	let result = creep.pos.findClosestByRange(semiContainers);
+	let result = creep.pos.findClosestByRange(semiContainers).id;
 	if (!result) {
 		const containers = _.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType));
-		result = creep.pos.findClosestByRange(containers);
+		result = creep.pos.findClosestByRange(containers).id;
 	}
 	return result;
 }

@@ -39,26 +39,26 @@ function run(creep) {
 		}
 		switch (creep.memory.refuelMethod) {
 			case 'pickup':
-				result = creep.pickup(creep.memory.target);
+				result = creep.pickup(Game.getObjectById(creep.memory.target));
 				break;
 			case 'withdraw':
-				result = creep.withdraw(creep.memory.target, RESOURCE_ENERGY);
+				result = creep.withdraw(Game.getObjectById(creep.memory.target), RESOURCE_ENERGY);
 				break;
 		}
 	}
 	else if (creep.memory.upgrading) {
-		result = creep.upgradeController(creep.memory.target);
+		result = creep.upgradeController(Game.getObjectById(creep.memory.target));
 	} 
 	else if (creep.memory.building) {
-		result = creep.build(creep.memory.target);
+		result = creep.build(Game.getObjectById(creep.memory.target));
 	}
 	else if (creep.memory.repairing) {
-		result = creep.repair(creep.memory.target);
+		result = creep.repair(Game.getObjectById(creep.memory.target));
 	}
 
 	switch(result) {
 		case ERR_NOT_IN_RANGE:
-			creep.moveTo(creep.memory.target, {visualizePathStyle: {stroke: creep.memory.color}});
+			creep.moveTo(Game.getObjectById(creep.memory.target), {visualizePathStyle: {stroke: creep.memory.color}});
 			break;
 		case ERR_INVALID_TARGET:
 			decideTask(creep);
@@ -86,7 +86,7 @@ function decideTask(creep) {
 
 	if (buildingsInNeedOfRepair.length > 2 * totalRepairers) {
 		creep.memory.repairing = true;
-		creep.memory.target = creep.pos.findClosestByRange(buildingsInNeedOfRepair);
+		creep.memory.target = creep.pos.findClosestByRange(buildingsInNeedOfRepair).id;
 		creep.memory.color = "#00ffaa";
 		creep.say("🏥 repair");
 	}
@@ -98,7 +98,7 @@ function decideTask(creep) {
 	}
 	else {
 		creep.memory.upgrading = true;
-		creep.memory.target = creep.room.controller;
+		creep.memory.target = creep.room.controller.id;
 		creep.memory.color = "#ffffff";
 		creep.say("⚡ upgrade");
 	}
@@ -108,12 +108,12 @@ function findClosestRefuelingStation(creep) {
 	const containers = 
 		_.concat(_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType)),
 				 _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy >= (3/4) * (struct.energyCapacity)));
-	return creep.pos.findClosestByRange(containers);
+	return creep.pos.findClosestByRange(containers).id;
 }
 
 function findBuildTarget(creep) {
 	const sites = _.filter(Game.constructionSites, (site) => site.room.name == creep.room.name);
-	return creep.pos.findClosestByRange(sites);
+	return creep.pos.findClosestByRange(sites).id;
 }
 	
 module.exports = roleEngineer;

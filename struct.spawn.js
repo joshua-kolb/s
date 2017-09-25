@@ -16,7 +16,7 @@ function run(spawn) {
 		return;
 	}
 	
-	if (spawn.energy < (5/6)*spawn.energyCapacity) {
+	if (spawn.energy < 150) {
 		return;
 	}
 
@@ -29,17 +29,19 @@ function run(spawn) {
 	if (trucks.length < miners.length) {
 		spawnCreep(spawn, "truck");
 	}
-	else if (engineers.length < trucks.length) {
+	
+	if (engineers.length < trucks.length) {
 		spawnCreep(spawn, "engineer");
     }
-    else if (availableMiningSpots != 0) {
+	
+	if (availableMiningSpots != 0) {
 		spawnCreep(spawn, "miner");
 	}
     
 }
 
 function spawnCreep(spawn, creepType) {
-	const newName = spawn.createCreep(designCreep(creepType, spawn.energy), null, {role: creepType});
+	const newName = spawn.createCreep(designCreep(creepType, spawn.energy/2), null, {role: creepType});
 	console.log("Spawning new " + creepType + ": " + newName);
 }
 
