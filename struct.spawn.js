@@ -30,12 +30,10 @@ function run(spawn) {
 	if (trucks.length < miners.length) {
 		spawnCreep(spawn, "truck", newCreepEnergy);
 	}
-	
-	if (engineers.length < trucks.length) {
+	else if (engineers.length < trucks.length) {
 		spawnCreep(spawn, "engineer", newCreepEnergy);
     }
-	
-	if (availableMiningSpots != 0) {
+	else if (availableMiningSpots != 0) {
 		spawnCreep(spawn, "miner", newCreepEnergy);
 	}
     

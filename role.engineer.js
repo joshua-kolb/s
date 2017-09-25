@@ -86,7 +86,8 @@ function decideTask(creep) {
 
 	if (buildingsInNeedOfRepair.length > 2 * totalRepairers) {
 		creep.memory.repairing = true;
-		creep.memory.target = creep.pos.findClosestByRange(buildingsInNeedOfRepair).id;
+		const target = creep.pos.findClosestByRange(buildingsInNeedOfRepair)
+		creep.memory.target = target ? target.id : null;
 		creep.memory.color = "#00ffaa";
 		creep.say("repair");
 	}
@@ -108,12 +109,20 @@ function findClosestRefuelingStation(creep) {
 	const containers = 
 		_.concat(_.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType)),
 				 _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy >= (3/4) * (struct.energyCapacity)));
-	return creep.pos.findClosestByRange(containers).id;
+	const result = creep.pos.findClosestByRange(containers);
+	if (!result) {
+		return null
+	}
+	return result.id;
 }
 
 function findBuildTarget(creep) {
 	const sites = _.filter(Game.constructionSites, (site) => site.room.name == creep.room.name);
-	return creep.pos.findClosestByRange(sites).id;
+	const result = creep.pos.findClosestByRange(sites);
+	if (!result) {
+		return null
+	}
+	return result.id;
 }
 	
 module.exports = roleEngineer;

@@ -88,17 +88,24 @@ function startShipping(creep) {
 }
 
 function findLoadingTarget(creep) {
-	return creep.pos.findClosestByRange(FIND_DROPPED_ENERGY).id;
+	const result = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
+	if (!result) {
+		return null
+	}
+	return result.id;
 }
 
 function findShippingTarget(creep) {
 	const semiContainers =  _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType));
-	let result = creep.pos.findClosestByRange(semiContainers).id;
+	let result = creep.pos.findClosestByRange(semiContainers);
 	if (!result) {
 		const containers = _.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType));
-		result = creep.pos.findClosestByRange(containers).id;
+		result = creep.pos.findClosestByRange(containers);
 	}
-	return result;
+	if (!result) {
+		return null
+	}
+	return result.id;
 }
 
 module.exports = roleTruck;
