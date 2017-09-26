@@ -124,7 +124,10 @@ function findLoadingTarget(creep) {
 			return false;
 		});
 
-		if (creep.memory.loadingArea.targets.length == 0) {
+		if (!creep.memory.loadingArea || 
+			!creep.memory.loadingArea.targets ||
+			creep.memory.loadingArea.targets.length == 0) {
+
 			return null;
 		}	
 	}
@@ -176,7 +179,7 @@ function runMemoryOperations(room) {
 		Memory.loadingAreas = {};
 	}
 
-	if (!Memory.loadingAreas[room.name] || Memory.loadingAreas[room.name].lastCheckTime - Game.time > LOADING_AREA_CHECK_TIME) {
+	if (!Memory.loadingAreas[room.name] || Game.time - Memory.loadingAreas[room.name].lastCheckTime > LOADING_AREA_CHECK_TIME) {
 		Memory.loadingAreas[room.name] = findLoadingAreas(room);
 	}
 }

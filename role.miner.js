@@ -57,7 +57,7 @@ function runMemoryOperations(room) {
 		Memory.minerPositions = {};
 	}
 
-	if (!Memory.minerPositions[room.name] || Memory.minerPositions[room.name].lastCheckTime - Game.time > MINER_POSITION_CHECK_TIME) {
+	if (!Memory.minerPositions[room.name] || Game.time - Memory.minerPositions[room.name].lastCheckTime > MINER_POSITION_CHECK_TIME) {
 		Memory.minerPositions[room.name] = findMinerPositions(room);
 		Memory.minerPositions[room.name].lastCheckTime = Game.time;
 	}
