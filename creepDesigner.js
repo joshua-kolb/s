@@ -31,8 +31,8 @@ function designCreep(role, energy) {
             parts.move = Math.floor((energy - (parts.carry * 50)) / 50);
             break;
         case "engineer":
-			parts.work = Math.min(Math.floor((energy - 50) / 100), Math.floor((energy * 4 / 5) / 100));
-            parts.move = Math.min(Math.floor((energy - (parts.work * 100) - 50) / 50), Math.floor((energy * 1 / 10) / 50));
+			parts.work = Math.min(Math.floor((energy - 100) / 100), Math.floor((energy * 4 / 5) / 100));
+            parts.move = Math.min(Math.floor((energy - (parts.work * 100) - 50) / 50), Math.max(Math.floor((energy * 1 / 10) / 50), 1));
             parts.carry = Math.floor((energy - (parts.work * 100) - (parts.move * 50)) / 50);
             break;
         default:
