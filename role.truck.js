@@ -137,11 +137,11 @@ function findLoadingTarget(creep) {
 
 // should be filling containers over semiContainers a little, but currently isn't doing that...
 function findShippingTarget(creep) {
-	const semiContainers =  _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy < struct.energyCapacity);
-	let result = creep.pos.findClosestByRange(semiContainers);
+	const containers = _.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType) && struct.energy < struct.energyCapacity);
+	let result = creep.pos.findClosestByRange(containers);
 	if (!result) {
-		const containers = _.filter(Game.structures, (struct) => STANDARD_CONTAINERS.includes(struct.structureType) && struct.energy < struct.energyCapacity);
-		result = creep.pos.findClosestByRange(containers);
+		const semiContainers =  _.filter(Game.structures, (struct) => SEMI_CONTAINERS.includes(struct.structureType) && struct.energy < struct.energyCapacity);
+		result = creep.pos.findClosestByRange(semiContainers);
 	}
 	if (!result) {
 		return null

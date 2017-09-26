@@ -91,9 +91,10 @@ function findPositionsAroundSource(source) {
 	for (let x = source.pos.x - 1; x <= source.pos.x + 1; x++) {
 		for (let y = source.pos.y - 1; y <= source.pos.y + 1; y++) {
 			if ((x != source.pos.x || y != source.pos.y) && Game.map.getTerrainAt(x,y,source.room.name) == "plain") {
+				const pos = new RoomPosition(x, y, source.pos.roomName)
 				result.push({
-					pos: new RoomPosition(x, y, source.pos.roomName),
-					filled: false
+					pos: pos,
+					filled: pos.lookFor(LOOK_CREEPS).length != 0
 				});
 			}
 		}
