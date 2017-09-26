@@ -21,6 +21,14 @@ const SEMI_CONTAINERS = [
 /** @param {Creep} creep **/
 function run(creep) {
 
+	// Game.creeps isn't actually an array, so we have to
+	// turn it into a collection to get the length. This
+	// is why it's getting mapped to itself.
+	if (_.map(Game.creeps, c => c).length == 1) {
+		harvest(creep);
+		return;
+	}
+
 	if (creep.memory.refueling && creep.carry.energy == creep.carryCapacity) {
 		creep.memory.refueling = false;
 		decideTask(creep);
@@ -55,15 +63,6 @@ function run(creep) {
 	else if (creep.memory.repairing) {
 		result = creep.repair(Game.getObjectById(creep.memory.target));
 	}
-	else if (creep.memory.harvesting) {
-		if (creep.carry.energy == creep.carryCapacity) {
-			creep.memory.target = Game.spawns[Game.spawns.keys()[0]].id;
-			result = creep.transfer(Game.getObjectById(creep.memory.target), RESOURCE_ENERGY)
-		} else {
-			creep.memory.target = creep.room.find(FIND_SOURCES)[0].id;
-			result = creep.harvest(Game.getObjectById(creep.memory.target));
-		}
-	}
 
 	switch(result) {
 		case ERR_NOT_IN_RANGE:
@@ -83,20 +82,29 @@ function run(creep) {
 	}
 }
 
+function harvest(creep) {
+	if(creep.carry.energy < creep.carryCapacity) {
+		const sources = creep.room.find(FIND_SOURCES);
+		if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+			creep.moveTo(sources[0]);
+		}
+		return;
+	}
+
+	const spawn = Game.spawns[_.keys(Game.spawns)[0]]
+	if(spawn.energy < spawn.energyCapacity) {
+		if(creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+			creep.moveTo(spawn);
+		}
+	}
+}
+
 /** @param {Creep} creep **/
 function decideTask(creep) {
 
 	creep.memory.building = false;
 	creep.memory.upgrading = false;
 	creep.memory.repairing = false;
-	creep.memory.harvesting = false;
-
-	// Game.creeps isn't actually an array, so we have to
-	// turn it into a collection to get the length. This
-	// is why it's getting mapped to itself.
-	if (_.map(Game.creeps, c => c).length == 1) {
-		creep.memory.harvesting = true;
-	}
 
 	const totalUpgraders = _.filter(Game.creeps, (creep) => creep.memory.role == "engineer" && creep.memory.upgrading).length;
 	const totalRepairers = _.filter(Game.creeps, (creep) => creep.memory.role == "engineer" && creep.memory.repairing).length;
