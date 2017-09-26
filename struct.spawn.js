@@ -21,7 +21,10 @@ function run(spawn) {
 		return;
 	}
 
-	if (Game.creeps.length == 0) {
+	// Game.creeps isn't actually an array, so we have to
+	// turn it into a collection to get the length. This
+	// is why it's getting mapped to itself.
+	if (_.map(Game.creeps, c => c).length == 0) {
 		spawnCreep(spawn, "engineer", newCreepEnergy);
 		return;
 	}

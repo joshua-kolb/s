@@ -91,7 +91,10 @@ function decideTask(creep) {
 	creep.memory.repairing = false;
 	creep.memory.harvesting = false;
 
-	if (Game.creeps.length == 1) {
+	// Game.creeps isn't actually an array, so we have to
+	// turn it into a collection to get the length. This
+	// is why it's getting mapped to itself.
+	if (_.map(Game.creeps, c => c).length == 1) {
 		creep.memory.harvesting = true;
 	}
 
