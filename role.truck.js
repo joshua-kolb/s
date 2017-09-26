@@ -1,5 +1,6 @@
 const roleTruck = {
-	run: run
+	run: run,
+	runMemoryOperations: runMemoryOperations
 };
 
 const STANDARD_CONTAINERS = [
@@ -16,6 +17,9 @@ const SEMI_CONTAINERS = [
 function run(creep) {
 
 	if (creep.memory.loading) {
+		if (creep.ticksToLive == 1) {
+			stopLoading();
+		}
 		if (!creep.memory.target) {
 			creep.memory.target = findLoadingTarget(creep);
 			return;
@@ -76,26 +80,56 @@ function run(creep) {
 }
 
 function startLoading(creep) {
+	stopShipping(creep);
 	creep.memory.loading = true;
 	creep.memory.target = findLoadingTarget(creep);
 	creep.say("load");
 }
 
 function startShipping(creep) {
-	creep.memory.loading = false;
+	stopLoading(creep);
 	creep.memory.shipping = true;
 	creep.memory.target = findShippingTarget(creep);
 	creep.say("ship");
 }
 
+function stopLoading(creep) {
+	creep.memory.loading = false;
+	_.find(Memory.loadingAreas[creep.room.name].areas, area => {
+		if (area.centerPos == creep.memory.loadingArea.centerPos) {
+			area.totalPickupPower -= _.where(creep.body, part => part.type == CARRY).length * 50;
+		}
+	});
+	delete creep.memory.loadingArea;
+}
+
+function stopShipping(creep) {
+	creep.memory.shipping = false;
+}
+
 // should be based on how much resource is at the location, the area around it, and how far away it is.
+
+
 function findLoadingTarget(creep) {
-	const result = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, (resource) => !Memory.loadingPositions.includes(resource.id));
-	if (!result) {
-		return null
+	
+	if (!creep.memory.loadingArea || 
+		!creep.memory.loadingArea.targets ||
+		creep.memory.loadingArea.targets.length == 0) {
+
+		creep.memory.loadingArea = _.find(Memory.loadingAreas[creep.room.name].areas, (area) => {
+			if (area.totalPickupPower < area.totalResource) {
+				area.totalPickupPower += _.where(creep.body, part => part.type == CARRY).length * 50;
+				return true;
+			}
+			return false;
+		});
+
+		if (creep.memory.loadingArea.targets.length == 0) {
+			return null;
+		}	
 	}
-	Memory.loadingPositions.push(result.id);
-	return result.id;
+
+	return creep.memory.loadingArea.targets.pop().id;
 }
 
 // should be filling containers over semiContainers a little, but currently isn't doing that...
@@ -110,6 +144,67 @@ function findShippingTarget(creep) {
 		return null
 	}
 	return result.id;
+}
+
+/*
+
+loadingAreas: {
+	"room1": {
+		lastCheckTime: *time_ticks*,
+		areas: [
+			{
+				centerPos: *RoomPosition*,
+				totalResource: 200,
+				totalPickupPower: 100,
+				targets: [
+					{
+						id: *id*,
+						amount: 50
+						assignedPickupPower: 0
+					}
+				]
+			}
+		]
+	}
+} 
+
+*/
+
+const LOADING_AREA_CHECK_TIME = 5;
+function runMemoryOperations(room) {
+	if (!Memory.loadingAreas) {
+		Memory.loadingAreas = {};
+	}
+
+	if (!Memory.loadingAreas[room.name] || Memory.loadingAreas[room.name].lastCheckTime - Game.time > LOADING_AREA_CHECK_TIME) {
+		Memory.loadingAreas[room.name] = roleTruck.findLoadingAreas(room);
+	}
+}
+
+const LOADING_AREA_RANGE = 2;
+function findLoadingAreas(room) {
+	const oldAreas = Memory.loadingAreas && Memory.loadingAreas[room.name] && Memory.loadingAreas[room.name].areas ? Memory.loadingAreas[room.name].areas : [];
+	const sources = room.find(FIND_SOURCES);
+	return {
+		lastCheckTime: Game.time,
+		areas: _.map(sources, (source) => {
+			const drops = source.pos.findInRange(FIND_DROPPED_RESOURCES, LOADING_AREA_RANGE);
+			const oldArea = _.find(oldArea, (area) => area.centerPos == source.pos);
+			return {
+				centerPos: source.pos,
+				totalResource: _.reduce(drops, (sum, drop) => sum + drop.amount, 0),
+				totalPickupPower: oldArea ? oldArea.totalPickupPower : 0,
+				targets: _.map(drops, drop => { 
+					const oldTarget = oldArea ? _.find(oldArea.targets, (target) => target.id == drop.id) : undefined;
+					return {
+						id: drop.id,
+						amount: drop.amount,
+						assignedPickupPower:  oldTarget || 0
+					};
+				 })
+			};
+		})
+	};
 }
 
 module.exports = roleTruck;

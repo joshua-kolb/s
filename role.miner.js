@@ -2,7 +2,7 @@ const Utils = require("common.utils");
 
 const roleMiner = {
 	run: run,
-	findMinerPositions: findMinerPositions
+	runMemoryOperations: runMemoryOperations
 };
 
 /** @param {Creep} creep **/
@@ -51,6 +51,18 @@ function findMiningTarget(creep) {
 	return Utils.findClosestTarget(creep, targets);
 }
 
+const MINER_POSITION_CHECK_TIME = 300;
+function runMemoryOperations(room) {
+	if (!Memory.minerPositions) {
+		Memory.minerPositions = {};
+	}
+
+	if (!Memory.minerPositions[room.name] || Memory.minerPositions[room.name].lastCheckTime - Game.time > MINER_POSITION_CHECK_TIME) {
+		Memory.minerPositions[room.name] = roleMiner.findMinerPositions(spawn.room);
+		Memory.minerPositions[room.name].lastCheckTime = Game.time;
+	}
+}
+
 function findMinerPositions(room) {
 	const sources = room.find(FIND_SOURCES);
 
@@ -70,15 +82,8 @@ const HOSTILE_SEARCH_RADIUS = 5;
 function findIfSourceIsHostile(source) {
 	const x = source.pos.x;
 	const y = source.pos.y;
-	const creepsLocations = source.room.lookForAtArea(
-		LOOK_CREEPS, 
-		y + HOSTILE_SEARCH_RADIUS, 
-		x - HOSTILE_SEARCH_RADIUS, 
-		y - HOSTILE_SEARCH_RADIUS, 
-		x + HOSTILE_SEARCH_RADIUS);
-	return _.some(creepsLocations, (location) => {
-		return location.creep.my;
-	});
+	const creepsLocations = source.pos.findInRange(FIND_HOSTILE_CREEPS, HOSTILE_SEARCH_RADIUS);
+	return creepsLocations.length != 0;
 }
 
 function findPositionsAroundSource(source) {
