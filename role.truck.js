@@ -177,7 +177,7 @@ function runMemoryOperations(room) {
 	}
 
 	if (!Memory.loadingAreas[room.name] || Memory.loadingAreas[room.name].lastCheckTime - Game.time > LOADING_AREA_CHECK_TIME) {
-		Memory.loadingAreas[room.name] = roleTruck.findLoadingAreas(room);
+		Memory.loadingAreas[room.name] = findLoadingAreas(room);
 	}
 }
 
@@ -189,7 +189,7 @@ function findLoadingAreas(room) {
 		lastCheckTime: Game.time,
 		areas: _.map(sources, (source) => {
 			const drops = source.pos.findInRange(FIND_DROPPED_RESOURCES, LOADING_AREA_RANGE);
-			const oldArea = _.find(oldArea, (area) => area.centerPos == source.pos);
+			const oldArea = _.find(oldAreas, (area) => area.centerPos == source.pos);
 			return {
 				centerPos: source.pos,
 				totalResource: _.reduce(drops, (sum, drop) => sum + drop.amount, 0),

@@ -58,7 +58,7 @@ function runMemoryOperations(room) {
 	}
 
 	if (!Memory.minerPositions[room.name] || Memory.minerPositions[room.name].lastCheckTime - Game.time > MINER_POSITION_CHECK_TIME) {
-		Memory.minerPositions[room.name] = roleMiner.findMinerPositions(spawn.room);
+		Memory.minerPositions[room.name] = findMinerPositions(room);
 		Memory.minerPositions[room.name].lastCheckTime = Game.time;
 	}
 }
