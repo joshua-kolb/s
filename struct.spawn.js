@@ -21,6 +21,11 @@ function run(spawn) {
 		return;
 	}
 
+	if (Game.creeps.length == 0) {
+		spawnCreep(spawn, "engineer", newCreepEnergy);
+		return;
+	}
+
     const miners = _.filter(Game.creeps, (creep) => creep.memory.role == "miner");
 	const engineers = _.filter(Game.creeps, (creep) => creep.memory.role == "engineer");
 	const trucks = _.filter(Game.creeps, (creep) => creep.memory.role == "truck");

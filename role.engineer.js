@@ -55,6 +55,15 @@ function run(creep) {
 	else if (creep.memory.repairing) {
 		result = creep.repair(Game.getObjectById(creep.memory.target));
 	}
+	else if (creep.memory.harvesting) {
+		if (creep.carry.energy == creep.carryCapacity) {
+			creep.memory.target = Game.spawns[Game.spawns.keys()[0]].id;
+			result = creep.transfer(Game.getObjectById(creep.memory.target), RESOURCE_ENERGY)
+		} else {
+			creep.memory.target = creep.room.find(FIND_SOURCES)[0].id;
+			result = creep.harvest(Game.getObjectById(creep.memory.target));
+		}
+	}
 
 	switch(result) {
 		case ERR_NOT_IN_RANGE:
@@ -80,6 +89,11 @@ function decideTask(creep) {
 	creep.memory.building = false;
 	creep.memory.upgrading = false;
 	creep.memory.repairing = false;
+	creep.memory.harvesting = false;
+
+	if (Game.creeps.length == 1) {
+		creep.memory.harvesting = true;
+	}
 
 	const totalUpgraders = _.filter(Game.creeps, (creep) => creep.memory.role == "engineer" && creep.memory.upgrading).length;
 	const totalRepairers = _.filter(Game.creeps, (creep) => creep.memory.role == "engineer" && creep.memory.repairing).length;
